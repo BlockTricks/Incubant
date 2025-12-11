@@ -83,7 +83,7 @@ export default function ApplyPage() {
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               placeholder="My Awesome Startup"
               maxLength={100}
             />
@@ -98,7 +98,7 @@ export default function ApplyPage() {
               required
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               rows={4}
               placeholder="A brief description of your startup..."
               maxLength={500}
@@ -114,7 +114,7 @@ export default function ApplyPage() {
               required
               value={formData.proposal}
               onChange={(e) => setFormData({ ...formData, proposal: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               rows={8}
               placeholder="Describe your startup idea, milestones, funding needs, and how you plan to use the funds..."
               maxLength={1000}
