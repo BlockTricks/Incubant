@@ -18,7 +18,6 @@ import {
   TxBroadcastResultRejected,
   getAddressFromPrivateKey,
 } from "@stacks/transactions";
-import { fetchAccount } from "@stacks/network";
 import * as bip39 from "bip39";
 import * as hdkey from "hdkey";
 import * as fs from "fs";
@@ -66,6 +65,12 @@ async function deployContract(
   const result = await broadcastTransaction(transaction, network);
 
   if ((result as TxBroadcastResultRejected).error) {
+    const error = result as TxBroadcastResultRejected;
+    // Check if it's a BadNonce error and extract the expected nonce
+    if (error.error === 'transaction rejected' && error.reason === 'BadNonce' && error.reason_data?.expected !== undefined) {
+      const expectedNonce = error.reason_data.expected;
+      throw new Error(`BAD_NONCE:${expectedNonce}`);
+    }
     console.error(`❌ Failed to deploy ${contractName}:`, result);
     throw new Error(`Deployment failed for ${contractName}: ${JSON.stringify(result)}`);
   }
@@ -73,10 +78,16 @@ async function deployContract(
   const txId = (result as TxBroadcastResultOk).txid;
   const contractAddress = `${deployerAddress}.${contractName}`;
   
+  const explorerUrl = network instanceof StacksMainnet
+    ? `https://explorer.stacks.co/txid/${txId}`
+    : network instanceof StacksTestnet
+    ? `https://explorer.stacks.co/?chain=testnet&txid=${txId}`
+    : `${networkUrl.replace('/v2', '')}/extended/v1/tx/${txId}`;
+  
   console.log(`✅ Deployed ${contractName}`);
   console.log(`   Contract Address: ${contractAddress}`);
   console.log(`   Transaction ID: ${txId}`);
-  console.log(`   Explorer: ${network.getCoreApiUrl().replace('/v2', '')}/extended/v1/tx/${txId}\n`);
+  console.log(`   Explorer: ${explorerUrl}\n`);
 
   return { txId, contractAddress };
 }
@@ -186,37 +197,83 @@ async function main() {
 
   const deployerAddress = getAddressFromPrivateKey(deployerKey, network.version);
   
+  // Get network URL
+  const networkUrl = network instanceof StacksMainnet 
+    ? "https://stacks-node-api.mainnet.stacks.co"
+    : network instanceof StacksTestnet
+    ? "https://stacks-node-api.testnet.stacks.co"
+    : network.getCoreApiUrl?.() || "http://localhost:20443";
+  
   console.log(`🚀 Deploying contracts to ${networkType.toUpperCase()}...`);
-  console.log(`   Network URL: ${network.getCoreApiUrl()}`);
+  console.log(`   Network URL: ${networkUrl}`);
   console.log(`   Deployer Address: ${deployerAddress}`);
   console.log(`   Contracts to deploy: ${CONTRACTS.length}\n`);
 
-  // Get initial nonce
-  const account = await fetchAccount({ network, address: deployerAddress });
-  let currentNonce = BigInt(account.nonce);
-  console.log(`📊 Starting nonce: ${currentNonce}\n`);
+  // Get initial nonce by fetching account info
+  let currentNonce = BigInt(0);
+  try {
+    const accountUrl = `${networkUrl}/v2/accounts/${deployerAddress}`;
+    console.log(`📡 Fetching account nonce from ${accountUrl}...`);
+    const response = await fetch(accountUrl, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    
+    if (response.ok) {
+      const account = await response.json();
+      currentNonce = BigInt(account.nonce || 0);
+      console.log(`📊 Starting nonce: ${currentNonce}\n`);
+    } else {
+      const errorText = await response.text();
+      console.error(`⚠️  Failed to fetch account: ${response.status}`);
+      console.log(`   Will attempt deployment and retry with correct nonce if needed\n`);
+    }
+  } catch (error: any) {
+    console.error(`⚠️  Error fetching account nonce: ${error.message}`);
+    console.log(`   Will attempt deployment and retry with correct nonce if needed\n`);
+  }
 
   const deployedContracts: Record<string, { txId: string; address: string }> = {};
 
   for (let i = 0; i < CONTRACTS.length; i++) {
     const contract = CONTRACTS[i];
-    try {
-      const result = await deployContract(contract, network, deployerKey, currentNonce);
-      deployedContracts[contract] = {
-        txId: result.txId,
-        address: result.contractAddress,
-      };
-      currentNonce++;
-      
-      // Wait between deployments to avoid rate limiting
-      if (i < CONTRACTS.length - 1) {
-        console.log(`⏳ Waiting 3 seconds before next deployment...\n`);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+    let retryCount = 0;
+    const maxRetries = 2;
+    
+    while (retryCount <= maxRetries) {
+      try {
+        const result = await deployContract(contract, network, deployerKey, Number(currentNonce));
+        deployedContracts[contract] = {
+          txId: result.txId,
+          address: result.contractAddress,
+        };
+        currentNonce++;
+        break; // Success, exit retry loop
+      } catch (error: any) {
+        // Check if it's a BadNonce error
+        if (error.message && error.message.startsWith('BAD_NONCE:')) {
+          const expectedNonce = BigInt(error.message.split(':')[1]);
+          console.log(`⚠️  Nonce mismatch. Expected: ${expectedNonce}, Used: ${currentNonce}`);
+          currentNonce = expectedNonce;
+          retryCount++;
+          if (retryCount <= maxRetries) {
+            console.log(`🔄 Retrying with correct nonce ${currentNonce}...\n`);
+            continue;
+          }
+        }
+        
+        // If we've exhausted retries or it's a different error, fail
+        console.error(`❌ Error deploying ${contract}:`, error.message || error);
+        console.error(`\n⚠️  Deployed ${Object.keys(deployedContracts).length} of ${CONTRACTS.length} contracts`);
+        process.exit(1);
       }
-    } catch (error) {
-      console.error(`❌ Error deploying ${contract}:`, error);
-      console.error(`\n⚠️  Deployed ${Object.keys(deployedContracts).length} of ${CONTRACTS.length} contracts`);
-      process.exit(1);
+    }
+    
+    // Wait between deployments to avoid rate limiting
+    if (i < CONTRACTS.length - 1) {
+      console.log(`⏳ Waiting 3 seconds before next deployment...\n`);
+      await new Promise((resolve) => setTimeout(resolve, 3000));
     }
   }
 
@@ -251,7 +308,11 @@ async function main() {
   console.log("\n💾 Deployment info saved to deployment.json");
   console.log("\n🔍 View transactions on explorer:");
   for (const [contract, info] of Object.entries(deployedContracts)) {
-    const explorerUrl = network.getCoreApiUrl().replace('/v2', '') + `/extended/v1/tx/${info.txId}`;
+    const explorerUrl = networkType === "mainnet"
+      ? `https://explorer.stacks.co/txid/${info.txId}`
+      : networkType === "testnet"
+      ? `https://explorer.stacks.co/?chain=testnet&txid=${info.txId}`
+      : `${networkUrl.replace('/v2', '')}/extended/v1/tx/${info.txId}`;
     console.log(`   ${contract}: ${explorerUrl}`);
   }
 }

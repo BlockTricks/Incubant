@@ -38,6 +38,7 @@
     "vitest": "^1.0.0"
   },
   "dependencies": {
+    "@stacks/api": "^6.11.4-pr.472091f.0",
     "@stacks/bns": "^7.2.0",
     "@stacks/connect": "^7.0.0",
     "@stacks/connect-react": "^7.0.0",
