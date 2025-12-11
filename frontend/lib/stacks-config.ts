@@ -7,8 +7,8 @@ import { STACKS_MAINNET, STACKS_TESTNET } from "@stacks/network";
 export const APP_NAME = "Incubant";
 export const APP_ICON = "/icon.png";
 
-// Determine network from environment
-export const isMainnet = process.env.NEXT_PUBLIC_STACKS_NETWORK === "mainnet";
+// Determine network from environment (default to mainnet since contracts are deployed there)
+export const isMainnet = (process.env.NEXT_PUBLIC_STACKS_NETWORK || "mainnet") === "mainnet";
 
 export const network = isMainnet
   ? STACKS_MAINNET

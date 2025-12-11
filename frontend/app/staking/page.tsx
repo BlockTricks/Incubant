@@ -34,7 +34,7 @@ export default function StakingPage() {
           uintCV(parseInt(startupId)),
           uintCV(parseInt(amount) * 1e6), // Convert to micro-STX
         ],
-        network: isMainnet ? 'mainnet' : 'testnet',
+        network: 'mainnet', // Contracts are deployed on mainnet
       });
 
       if (response) {
@@ -52,16 +52,16 @@ export default function StakingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Header />
       <main className="container mx-auto px-4 py-16 max-w-3xl">
-        <h1 className="text-4xl font-bold mb-8">Staking</h1>
+        <h1 className="text-4xl font-bold mb-8 text-gray-900 dark:text-white">Staking</h1>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <h2 className="text-2xl font-semibold mb-6">Stake Tokens</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-8 transition-colors">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">Stake Tokens</h2>
           
           {!isSignedIn ? (
-            <div className="text-center py-8 text-gray-600">
+            <div className="text-center py-8 text-gray-600 dark:text-gray-400">
               <p>Please connect your wallet to stake tokens.</p>
             </div>
           ) : (
@@ -73,7 +73,7 @@ export default function StakingPage() {
               className="space-y-6"
             >
               <div>
-                <label htmlFor="startupId" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="startupId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Startup ID *
                 </label>
                 <input
@@ -82,13 +82,13 @@ export default function StakingPage() {
                   required
                   value={startupId}
                   onChange={(e) => setStartupId(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white bg-white dark:bg-gray-700 transition-colors"
                   placeholder="1"
                 />
               </div>
 
               <div>
-                <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Amount (STX) *
                 </label>
                 <input
@@ -97,11 +97,11 @@ export default function StakingPage() {
                   required
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white bg-white dark:bg-gray-700 transition-colors"
                   placeholder="1000"
                   min="1"
                 />
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                   Minimum stake: 1000 STX
                 </p>
               </div>
@@ -109,7 +109,7 @@ export default function StakingPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="w-full px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? "Staking..." : "Stake Tokens"}
               </button>
@@ -117,9 +117,9 @@ export default function StakingPage() {
           )}
         </div>
 
-        <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
-          <h2 className="text-lg font-semibold mb-2">Benefits of Staking</h2>
-          <ul className="list-disc list-inside space-y-2 text-gray-700">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6 mb-8 transition-colors">
+          <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Benefits of Staking</h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
             <li>Earn rewards based on startup milestones</li>
             <li>Support startups you believe in</li>
             <li>Get preferential equity access</li>
@@ -127,9 +127,9 @@ export default function StakingPage() {
           </ul>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-2">How Staking Works</h2>
-          <ol className="list-decimal list-inside space-y-2 text-gray-700">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 transition-colors">
+          <h2 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">How Staking Works</h2>
+          <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
             <li>Choose a startup you want to support</li>
             <li>Stake your tokens in their staking pool</li>
             <li>Earn rewards as the startup completes milestones</li>

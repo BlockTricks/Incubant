@@ -69,14 +69,14 @@ export default function StartupsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Header />
       <main className="container mx-auto px-4 py-16">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Startups</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Startups</h1>
           <Link
             href="/startups/apply"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
           >
             Apply for Incubation
           </Link>
@@ -84,15 +84,15 @@ export default function StartupsPage() {
 
         {loading ? (
           <div className="text-center py-16">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">Loading startups...</p>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400"></div>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading startups...</p>
           </div>
         ) : startups.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-lg shadow">
-            <p className="text-gray-600 mb-4">No startups found.</p>
+          <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-lg shadow transition-colors">
+            <p className="text-gray-600 dark:text-gray-400 mb-4">No startups found.</p>
             <Link
               href="/startups/apply"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 dark:text-blue-400 hover:underline"
             >
               Be the first to apply!
             </Link>
@@ -103,10 +103,10 @@ export default function StartupsPage() {
               <Link
                 key={startup.id}
                 href={`/startups/${startup.id}`}
-                className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-all"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <h2 className="text-xl font-semibold">{startup.name.value}</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{startup.name.value}</h2>
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
                       startup.status.value
@@ -115,10 +115,10 @@ export default function StartupsPage() {
                     {getStatusLabel(startup.status.value)}
                   </span>
                 </div>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
                   {startup.description.value}
                 </p>
-                <div className="flex justify-between text-sm text-gray-500">
+                <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                   <span>ID: #{startup.id}</span>
                   <span>
                     {startup.total_funding.value
