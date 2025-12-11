@@ -69,11 +69,11 @@ export default function StartupsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Header />
       <main className="container mx-auto px-4 py-16">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Startups</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Startups</h1>
           <Link
             href="/startups/apply"
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
