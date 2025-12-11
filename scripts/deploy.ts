@@ -81,11 +81,36 @@ async function deployContract(
 
 async function main() {
   const networkType = process.env.STACKS_NETWORK || "devnet";
-  const deployerKey = process.env.DEPLOYER_SECRET_KEY;
+  let deployerKey = process.env.DEPLOYER_SECRET_KEY;
 
   if (!deployerKey) {
     console.error("❌ DEPLOYER_SECRET_KEY not found in .env file");
     process.exit(1);
+  }
+
+  // Trim whitespace and remove any quotes
+  deployerKey = deployerKey.trim().replace(/^["']|["']$/g, '');
+  
+  // Remove '0x' prefix if present
+  if (deployerKey.startsWith('0x')) {
+    deployerKey = deployerKey.slice(2);
+  }
+  
+  // Validate secret key format (should be 64 or 66 hex characters)
+  const isValidFormat = /^[0-9a-fA-F]{64}(01)?$/.test(deployerKey);
+  
+  if (!isValidFormat) {
+    console.error("❌ Invalid DEPLOYER_SECRET_KEY format");
+    console.error(`   Received length: ${deployerKey.length} characters`);
+    console.error("   Secret key should be 64 hex characters, optionally followed by '01'");
+    console.error("   Example: 753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601");
+    console.error("   Or: 753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a6 (without 01 suffix)");
+    process.exit(1);
+  }
+
+  // Ensure it ends with '01' if not already
+  if (deployerKey.length === 64) {
+    deployerKey = deployerKey + "01";
   }
 
   let network: StacksTestnet | StacksMainnet | StacksDevnet;
