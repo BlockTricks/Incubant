@@ -1,0 +1,26 @@
+[project]
+name = "incubant"
+authors = ["Incubant Team"]
+description = "Decentralized Startup Incubation Platform on Stacks"
+
+[contracts.incubation]
+path = "contracts/incubation.clar"
+
+[contracts.equity-token]
+path = "contracts/equity-token.clar"
+
+[contracts.governance]
+path = "contracts/governance.clar"
+
+[contracts.mentorship]
+path = "contracts/mentorship.clar"
+
+[contracts.staking]
+path = "contracts/staking.clar"
+
+[contracts.token-stream]
+path = "contracts/token-stream.clar"
+
+[repl]
+costs = true
+
