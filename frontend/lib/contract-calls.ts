@@ -4,9 +4,6 @@
 
 import {
   callReadOnlyFunction,
-  contractPrincipalCV,
-  stringAsciiCV,
-  stringUtf8CV,
   uintCV,
   principalCV,
   cvToJSON,
