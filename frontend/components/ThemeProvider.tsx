@@ -12,22 +12,9 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  // Initialize theme from localStorage or system preference
-  const getInitialTheme = (): Theme => {
-    if (typeof window === "undefined") return "light";
-    try {
-      const savedTheme = localStorage.getItem("theme") as Theme;
-      if (savedTheme === "light" || savedTheme === "dark") {
-        return savedTheme;
-      }
-    } catch (e) {
-      // localStorage might not be available
-    }
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    return prefersDark ? "dark" : "light";
-  };
-
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  // Always start with "light" on both server and client to prevent hydration mismatch
+  // We'll update it after mount based on localStorage
+  const [theme, setTheme] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
   const applyTheme = useCallback((newTheme: Theme) => {
@@ -38,13 +25,33 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (newTheme === "dark") {
       root.classList.add("dark");
     }
+    // Double-check: ensure dark is removed for light theme
+    if (newTheme === "light") {
+      root.classList.remove("dark");
+    }
   }, []);
 
   useEffect(() => {
+    // On mount, read the actual theme from localStorage or system preference
+    const getInitialTheme = (): Theme => {
+      try {
+        const savedTheme = localStorage.getItem("theme") as Theme;
+        if (savedTheme === "light" || savedTheme === "dark") {
+          return savedTheme;
+        }
+      } catch (e) {
+        // localStorage might not be available
+      }
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      return prefersDark ? "dark" : "light";
+    };
+
+    const initialTheme = getInitialTheme();
+    // Apply theme immediately before setting state
+    applyTheme(initialTheme);
+    setTheme(initialTheme);
     setMounted(true);
-    // Apply theme on mount based on current state
-    applyTheme(theme);
-  }, [applyTheme, theme]);
+  }, [applyTheme]);
 
   useEffect(() => {
     // Apply theme whenever it changes after mount
@@ -64,17 +71,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
           // localStorage might not be available
         }
       }
-      // Apply theme immediately
-      if (typeof document !== "undefined") {
-        const root = document.documentElement;
-        root.classList.remove("dark");
-        if (newTheme === "dark") {
-          root.classList.add("dark");
-        }
-      }
+      // Apply theme immediately - don't wait for state update
+      applyTheme(newTheme);
       return newTheme;
     });
-  }, []);
+  }, [applyTheme]);
 
   // Always provide the context, even before mount
   // This prevents the "must be used within ThemeProvider" error

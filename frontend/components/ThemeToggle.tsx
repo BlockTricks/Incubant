@@ -1,15 +1,48 @@
 "use client";
 
 import { useTheme } from "./ThemeProvider";
+import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by only rendering after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Show a placeholder during SSR and initial render to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <button
+        className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        aria-label="Toggle theme"
+        suppressHydrationWarning
+      >
+        <svg
+          className="w-5 h-5 text-gray-800 dark:text-gray-200"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          />
+        </svg>
+      </button>
+    );
+  }
 
   return (
     <button
       onClick={toggleTheme}
       className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
       aria-label="Toggle theme"
+      suppressHydrationWarning
     >
       {theme === "light" ? (
         <svg
