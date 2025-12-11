@@ -1,0 +1,31 @@
+{
+  "network": "mainnet",
+  "deployerAddress": "SP2QNSNKR3NRDWNTX0Q7R4T8WGBJ8RE8RA516AKZP",
+  "deployedAt": "2025-12-11T19:19:21.916Z",
+  "contracts": {
+    "incubation": {
+      "txId": "c35272f3659e7a3921d61543e6acd0e874f560fe4a93d6af2f330fa380990110",
+      "address": "SP2QNSNKR3NRDWNTX0Q7R4T8WGBJ8RE8RA516AKZP.incubation"
+    },
+    "token-stream": {
+      "txId": "051ccbabdc6bf871a4993cda51098c2c6150b45821f5fa7e0fd51229dce890d9",
+      "address": "SP2QNSNKR3NRDWNTX0Q7R4T8WGBJ8RE8RA516AKZP.token-stream"
+    },
+    "equity-token": {
+      "txId": "cf4960a238e084ee49b4df6140b16c9ceb3586410d0834881085c54277261062",
+      "address": "SP2QNSNKR3NRDWNTX0Q7R4T8WGBJ8RE8RA516AKZP.equity-token"
+    },
+    "governance": {
+      "txId": "0005e2c505d871189fda8d12369a820153fa525ee4141fc5a18d734dba64a0f5",
+      "address": "SP2QNSNKR3NRDWNTX0Q7R4T8WGBJ8RE8RA516AKZP.governance"
+    },
+    "mentorship": {
+      "txId": "e9d5606d6c58c9de8a7d89afe9b06566f029b7e4efe83ba8af1366840bb0c2bf",
+      "address": "SP2QNSNKR3NRDWNTX0Q7R4T8WGBJ8RE8RA516AKZP.mentorship"
+    },
+    "staking": {
+      "txId": "8bffc72af8bc10f538cbd434cafcd6dcd8c646b3f9cd962ef461698abf1e5869",
+      "address": "SP2QNSNKR3NRDWNTX0Q7R4T8WGBJ8RE8RA516AKZP.staking"
+    }
+  }
+}
