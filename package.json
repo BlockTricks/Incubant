@@ -1,0 +1,45 @@
+{
+  "name": "incubant",
+  "version": "0.1.0",
+  "description": "Decentralized Startup Incubation Platform on Stacks",
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "check": "clarinet check",
+    "console": "clarinet console",
+    "deploy:devnet": "clarinet deploy --devnet",
+    "deploy:testnet": "clarinet deploy --testnet",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\""
+  },
+  "keywords": [
+    "stacks",
+    "blockchain",
+    "clarity",
+    "startup",
+    "incubation",
+    "defi"
+  ],
+  "author": "Incubant Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@hirosystems/clarinet-sdk": "^2.0.0",
+    "@stacks/clarity": "^6.0.0",
+    "@stacks/transactions": "^6.0.0",
+    "@stacks/network": "^6.0.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "@stacks/connect": "^7.0.0",
+    "@stacks/connect-react": "^7.0.0",
+    "dotenv": "^16.0.0"
+  }
+}
+
