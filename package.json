@@ -10,6 +10,7 @@
     "console": "clarinet console",
     "deploy:devnet": "clarinet deploy --devnet",
     "deploy:testnet": "clarinet deploy --testnet",
+    "deploy:mainnet": "tsx scripts/deploy.ts",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\""
   },
@@ -33,6 +34,7 @@
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
     "prettier": "^3.0.0",
+    "tsx": "^4.7.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
   },
