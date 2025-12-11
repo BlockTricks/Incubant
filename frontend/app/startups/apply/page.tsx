@@ -72,11 +72,11 @@ export default function ApplyPage() {
 
   if (!isSignedIn) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
         <Header />
         <main className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-3xl font-bold mb-4">Apply for Incubation</h1>
-          <p className="text-gray-600 mb-8">
+          <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Apply for Incubation</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
             Please connect your wallet to apply for incubation.
           </p>
         </main>
