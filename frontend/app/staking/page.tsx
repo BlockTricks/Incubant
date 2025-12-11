@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { useStacks } from "@/components/StacksProvider";
-import { openContractCall } from "@stacks/connect";
+import { request } from "@stacks/connect";
 import { uintCV } from "@stacks/transactions";
 import { CONTRACT_ADDRESSES } from "@/lib/contracts";
+import { isMainnet } from "@/lib/stacks-config";
 
 export default function StakingPage() {
-  const { isSignedIn, userSession } = useStacks();
+  const { isSignedIn } = useStacks();
   const [startupId, setStartupId] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,31 +27,26 @@ export default function StakingPage() {
 
     setLoading(true);
     try {
-      const [contractAddress, contractName] = CONTRACT_ADDRESSES.STAKING.split(".");
-
-      await openContractCall({
-        network: userSession.appConfig.network,
-        contractAddress,
-        contractName,
+      const response = await request('stx_callContract', {
+        contract: CONTRACT_ADDRESSES.STAKING,
         functionName: "stake-tokens",
         functionArgs: [
           uintCV(parseInt(startupId)),
           uintCV(parseInt(amount) * 1e6), // Convert to micro-STX
         ],
-        onFinish: (data) => {
-          console.log("Stake submitted:", data);
-          alert("Stake submitted! Check the explorer for transaction status.");
-          setStartupId("");
-          setAmount("");
-          setLoading(false);
-        },
-        onCancel: () => {
-          setLoading(false);
-        },
+        network: isMainnet ? 'mainnet' : 'testnet',
       });
+
+      if (response) {
+        console.log("Stake submitted:", response);
+        alert("Stake submitted! Check the explorer for transaction status.");
+        setStartupId("");
+        setAmount("");
+      }
     } catch (error) {
       console.error("Error staking:", error);
       alert("Failed to stake tokens. Please try again.");
+    } finally {
       setLoading(false);
     }
   };

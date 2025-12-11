@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { useStacks } from "@/components/StacksProvider";
 import { governanceCalls } from "@/lib/contract-calls";
-import { openContractCall } from "@stacks/connect";
-import { uintCV, principalCV } from "@stacks/transactions";
+import { request } from "@stacks/connect";
+import { uintCV } from "@stacks/transactions";
 import { CONTRACT_ADDRESSES } from "@/lib/contracts";
+import { isMainnet } from "@/lib/stacks-config";
 
 export default function GovernancePage() {
-  const { isSignedIn, userSession } = useStacks();
+  const { isSignedIn } = useStacks();
   const [proposals, setProposals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,23 +31,21 @@ export default function GovernancePage() {
     }
 
     try {
-      const [contractAddress, contractName] = CONTRACT_ADDRESSES.GOVERNANCE.split(".");
-
-      await openContractCall({
-        network: userSession.appConfig.network,
-        contractAddress,
-        contractName,
+      const response = await request('stx_callContract', {
+        contract: CONTRACT_ADDRESSES.GOVERNANCE,
         functionName: "vote",
         functionArgs: [
           uintCV(proposalId),
           uintCV(voteChoice), // 0 = no, 1 = yes
           uintCV(votingPower),
         ],
-        onFinish: (data) => {
-          console.log("Vote submitted:", data);
-          alert("Vote submitted! Check the explorer for transaction status.");
-        },
+        network: isMainnet ? 'mainnet' : 'testnet',
       });
+
+      if (response) {
+        console.log("Vote submitted:", response);
+        alert("Vote submitted! Check the explorer for transaction status.");
+      }
     } catch (error) {
       console.error("Error voting:", error);
       alert("Failed to submit vote. Please try again.");

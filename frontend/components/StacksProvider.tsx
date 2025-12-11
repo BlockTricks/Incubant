@@ -1,17 +1,13 @@
 "use client";
 
-import { AppConfig, UserSession, showConnect } from "@stacks/connect";
+import { connect, disconnect, getLocalStorage, isConnected } from "@stacks/connect";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { network, APP_NAME, APP_ICON } from "@/lib/stacks-config";
-
-const appConfig = new AppConfig(["store_write", "publish_data"]);
-const userSession = new UserSession({ appConfig });
+import { APP_NAME, APP_ICON } from "@/lib/stacks-config";
 
 interface StacksContextType {
-  userSession: UserSession;
   userData: any;
   isSignedIn: boolean;
-  signIn: () => void;
+  signIn: () => Promise<void>;
   signOut: () => void;
 }
 
@@ -22,40 +18,44 @@ export function StacksProvider({ children }: { children: ReactNode }) {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
-    if (userSession.isUserSignedIn()) {
-      setUserData(userSession.loadUserData());
-      setIsSignedIn(true);
+    // Check if user is already connected
+    if (isConnected()) {
+      const data = getLocalStorage();
+      if (data?.addresses) {
+        setUserData(data);
+        setIsSignedIn(true);
+      }
     }
   }, []);
 
-  const signIn = () => {
-    showConnect({
-      appDetails: {
-        name: APP_NAME,
-        icon: APP_ICON,
-      },
-      redirectTo: "/",
-      onFinish: () => {
-        const userData = userSession.loadUserData();
-        setUserData(userData);
+  const signIn = async () => {
+    try {
+      const response = await connect({
+        appDetails: {
+          name: APP_NAME,
+          icon: APP_ICON,
+        },
+      });
+      
+      if (response) {
+        const data = getLocalStorage();
+        setUserData(data);
         setIsSignedIn(true);
-        window.location.reload();
-      },
-      userSession,
-    });
+      }
+    } catch (error) {
+      console.error("Error connecting wallet:", error);
+    }
   };
 
   const signOut = () => {
-    userSession.signUserOut();
+    disconnect();
     setUserData(null);
     setIsSignedIn(false);
-    window.location.reload();
   };
 
   return (
     <StacksContext.Provider
       value={{
-        userSession,
         userData,
         isSignedIn,
         signIn,

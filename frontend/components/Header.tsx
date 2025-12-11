@@ -30,8 +30,9 @@ export function Header() {
           {isSignedIn ? (
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">
-                {userData?.profile?.stxAddress?.mainnet?.slice(0, 6)}...
-                {userData?.profile?.stxAddress?.mainnet?.slice(-4)}
+                {userData?.addresses?.stx?.[0]?.address 
+                  ? `${userData.addresses.stx[0].address.slice(0, 6)}...${userData.addresses.stx[0].address.slice(-4)}`
+                  : "Connected"}
               </span>
               <button
                 onClick={signOut}

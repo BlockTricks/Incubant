@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { useStacks } from "@/components/StacksProvider";
-import { openContractCall } from "@stacks/connect";
+import { request } from "@stacks/connect";
 import { stringAsciiCV, stringUtf8CV } from "@stacks/transactions";
 import { CONTRACT_ADDRESSES } from "@/lib/contracts";
+import { isMainnet } from "@/lib/stacks-config";
 
 export default function ApplyPage() {
-  const { isSignedIn, userSession } = useStacks();
+  const { isSignedIn } = useStacks();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -25,31 +26,28 @@ export default function ApplyPage() {
 
     setLoading(true);
     try {
-      const [contractAddress, contractName] = CONTRACT_ADDRESSES.INCUBATION.split(".");
+      const functionArgs = [
+        stringAsciiCV(formData.name),
+        stringUtf8CV(formData.description),
+        stringUtf8CV(formData.proposal),
+      ];
 
-      await openContractCall({
-        network: userSession.appConfig.network,
-        contractAddress,
-        contractName,
+      const response = await request('stx_callContract', {
+        contract: CONTRACT_ADDRESSES.INCUBATION,
         functionName: "apply-for-incubation",
-        functionArgs: [
-          stringAsciiCV(formData.name),
-          stringUtf8CV(formData.description),
-          stringUtf8CV(formData.proposal),
-        ],
-        onFinish: (data) => {
-          console.log("Transaction submitted:", data);
-          alert("Application submitted! Check the explorer for transaction status.");
-          setFormData({ name: "", description: "", proposal: "" });
-          setLoading(false);
-        },
-        onCancel: () => {
-          setLoading(false);
-        },
+        functionArgs,
+        network: isMainnet ? 'mainnet' : 'testnet',
       });
+
+      if (response) {
+        console.log("Transaction submitted:", response);
+        alert("Application submitted! Check the explorer for transaction status.");
+        setFormData({ name: "", description: "", proposal: "" });
+      }
     } catch (error) {
       console.error("Error submitting application:", error);
       alert("Failed to submit application. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
