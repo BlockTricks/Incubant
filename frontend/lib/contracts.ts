@@ -30,3 +30,4 @@ export function getContractName(address: string): string {
   return address.split(".")[1] || "";
 }
 
+

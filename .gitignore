@@ -2,19 +2,23 @@
 .env
 .env.local
 .env.*.local
+.env.production
 
 # Node modules
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
 
 # Stacks/Clarity
 .stacks-node/
 .clarinet/
 *.test.ts.snap
+deployment.json
 
 # IDE
 .vscode/
@@ -23,29 +27,59 @@ yarn.lock
 *.swo
 *~
 .DS_Store
+*.sublime-project
+*.sublime-workspace
 
 # Build outputs
 dist/
 build/
+.next/
+out/
 *.wasm
+*.wat
 
 # Logs
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
 # Temporary files
 tmp/
 temp/
 *.tmp
+*.temp
+.cache/
 
 # Coverage
 coverage/
 .nyc_output/
+*.lcov
+.nyc_output
 
 # TypeScript
 *.tsbuildinfo
+*.tsbuildinfo.*
+
+# Testing
+.vercel
+.turbo
+
+# Misc
+*.pem
+*.key
+*.cert
+
 

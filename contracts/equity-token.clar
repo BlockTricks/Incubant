@@ -202,3 +202,4 @@
     (map-get? startup-equity { startup-id: startup-id })
 )
 
+

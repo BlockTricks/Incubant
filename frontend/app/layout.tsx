@@ -34,15 +34,24 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  const theme = localStorage.getItem('theme') || 
-                    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                  const savedTheme = localStorage.getItem('theme');
+                  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
                   const root = document.documentElement;
+                  // Explicitly remove dark class first
+                  root.classList.remove('dark');
+                  // Then add it only if theme is dark
                   if (theme === 'dark') {
                     root.classList.add('dark');
-                  } else {
+                  }
+                  // Ensure it's removed for light theme
+                  if (theme === 'light') {
                     root.classList.remove('dark');
                   }
-                } catch (e) {}
+                } catch (e) {
+                  // If localStorage fails, default to light
+                  document.documentElement.classList.remove('dark');
+                }
               })();
             `,
           }}

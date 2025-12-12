@@ -213,6 +213,70 @@ Incubant solves these problems by leveraging blockchain technology to create a t
 - Equity token trading volume
 - Platform TVL (Total Value Locked)
 
+## 📚 Documentation
+
+- **[Setup Guide](docs/README-SETUP.md)**: Detailed setup instructions
+- **[Architecture](docs/ARCHITECTURE.md)**: System architecture and design
+- **[Workspace Structure](docs/WORKSPACE.md)**: Project organization
+- **[Deployment Summary](docs/DEPLOYMENT-SUMMARY.md)**: Mainnet deployment details
+- **[Next Steps](docs/NEXT-STEPS.md)**: Future roadmap and enhancements
+- **[Contributing](CONTRIBUTING.md)**: How to contribute to the project
+
+## 🚀 Quick Start
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/Incubant.git
+   cd Incubant
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   cd frontend && npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp env.template .env
+   # Edit .env with your configuration
+   ```
+
+4. **Start development**
+   ```bash
+   # Test contracts
+   npm test
+   
+   # Start frontend
+   cd frontend && npm run dev
+   ```
+
+See [Setup Guide](docs/README-SETUP.md) for detailed instructions.
+
+## 📦 Project Structure
+
+```
+Incubant/
+├── contracts/          # Clarity smart contracts
+├── frontend/           # Next.js frontend application
+├── scripts/            # Deployment scripts
+├── tests/              # Test files
+├── docs/               # Documentation
+└── settings/           # Clarinet configuration
+```
+
+See [Workspace Structure](docs/WORKSPACE.md) for complete details.
+
+## 🔗 Links
+
+- **Stacks Explorer**: https://explorer.stacks.co
+- **Stacks Documentation**: https://docs.stacks.co
+- **Clarinet Documentation**: https://docs.hiro.so/clarinet
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ---
 
 **Tagline**: *"Where Ideas Meet Capital, Transparently"*
